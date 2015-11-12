@@ -12,7 +12,7 @@ before_build:
 build:
   verbosity: normal
 after_build:
-- ps: "if($env:APPVEYOR_REPO_TAG -eq $true){ \nappveyor PushArtifact ..\\ShellTC\\ShellTC\\ShellTC\\bin\\Release\\setup.exe \n}"
+- ps: "if($env:APPVEYOR_REPO_TAG -eq $true){ \nappveyor PushArtifact ..\\shelltc\\ShellTC\\ShellTC\\bin\\Release\\setup.exe \n}"
 deploy:
 - provider: GitHub
   tag: $(APPVEYOR_REPO_TAG_NAME)
