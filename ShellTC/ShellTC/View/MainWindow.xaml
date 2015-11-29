@@ -1,0 +1,88 @@
+﻿<Window x:Class="ShellTC.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ShellTC" Height="700" Width="1050" 
+        Icon="/ShellTC;component/Images/icon.png" 
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel x:Name="DockPanelLeft" Grid.Column="0" Width="Auto" Height="Auto">
+
+            <StackPanel Height= "30" Margin="5,10,5,0" DockPanel.Dock="Top" Orientation="Horizontal" >
+                <TextBlock Text="Path" Margin="0,0,10,0" VerticalAlignment="Center"></TextBlock>
+                <TextBox x:Name="tbLPath" Width="430" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" VerticalAlignment="Center" />
+                <Button x:Name="btnLGo" Margin="10,0,0,0" VerticalAlignment="Center">
+                    <Image Source="/Images/arrow.png"/>
+                </Button>
+            </StackPanel>
+            
+            <StackPanel Height= "30" Margin="5,10,5,10" DockPanel.Dock="Top" Orientation="Horizontal" >
+                <ComboBox x:Name="cbLDisc" Width="50" Margin="0,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <Button x:Name="btnLCopy" Margin="0,0,10,0" VerticalAlignment="Center">
+                    <Image Source="/Images/copy.png"/>
+                </Button>
+                <Button x:Name="btnLPaste" Margin="0,0,10,0" VerticalAlignment="Center">
+                    <Image Source="/Images/paste.png"/>
+                </Button>
+                <Button x:Name="btnLCut" Margin="0,0,10,0" VerticalAlignment="Center">
+                    <Image Source="/Images/cut.png"/>
+                </Button>
+                <Button x:Name="btnLDelete" Margin="0,0,10,0" VerticalAlignment="Center">
+                    <Image Source="/Images/delete.png"/>
+                </Button>
+            </StackPanel>
+
+            <ListBox x:Name="lbLeft" Height="520" Margin="5,0" DockPanel.Dock="Top"/>
+
+            <StackPanel Height= "30" Margin="5,10,5,10" DockPanel.Dock="Bottom" Orientation="Horizontal">
+                <TextBlock Text="Search" Margin="0,0,10,0" VerticalAlignment="Center"></TextBlock>
+                <TextBox x:Name="tbLSearch" Width ="420" VerticalContentAlignment="Center" VerticalAlignment="Center" />
+                <Button x:Name="btnLSearch" Margin="10,0,0,0" VerticalAlignment="Center">
+                    <Image Source="/Images/search.png"/>
+                </Button>
+            </StackPanel>
+        </DockPanel>
+
+        <GridSplitter Grid.Column="0" Grid.ColumnSpan="2" Width="0.2" HorizontalAlignment="Stretch" Background="Black" Foreground="Black" />
+
+        <DockPanel x:Name="DockPanelRight" Grid.Column="1">
+            <StackPanel Height= "30" Margin="5,10,5,0" DockPanel.Dock="Top" Orientation="Horizontal" >
+                <TextBlock Text="Path" Margin="0,0,10,0" VerticalAlignment="Center"></TextBlock>
+                <TextBox x:Name="tbRPath" Width="430" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" VerticalAlignment="Center" />
+                <Button x:Name="btnRGo" Margin="10,0,0,0" VerticalAlignment="Center">
+                    <Image Source="/Images/arrow.png"/>
+                </Button>
+            </StackPanel>
+
+            <StackPanel Height= "30" Margin="5,10,5,10" DockPanel.Dock="Top" Orientation="Horizontal" >
+                <ComboBox x:Name="cbRDisc" Width="50" Margin="0,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <Button x:Name="btnRCopy" Margin="0,0,10,0" VerticalAlignment="Center">
+                    <Image Source="/Images/copy.png"/>
+                </Button>
+                <Button x:Name="btnRPaste" Margin="0,0,10,0" VerticalAlignment="Center">
+                    <Image Source="/Images/paste.png"/>
+                </Button>
+                <Button x:Name="btnRCut" Margin="0,0,10,0" VerticalAlignment="Center">
+                    <Image Source="/Images/cut.png"/>
+                </Button>
+                <Button x:Name="btnRDelete" Margin="0,0,10,0" VerticalAlignment="Center">
+                    <Image Source="/Images/delete.png"/>
+                </Button>
+            </StackPanel>
+
+            <ListBox x:Name="lbRight" Height="520" Margin="5,0" DockPanel.Dock="Top"/>
+
+            <StackPanel Height= "30" Margin="5,10,5,10" DockPanel.Dock="Bottom" Orientation="Horizontal">
+                <TextBlock Text="Search" Margin="0,0,10,0" VerticalAlignment="Center"></TextBlock>
+                <TextBox x:Name="tbRSearch" Width ="420" VerticalContentAlignment="Center" VerticalAlignment="Center" />
+                <Button x:Name="btnRSearch" Margin="10,0,0,0" VerticalAlignment="Center">
+                    <Image Source="/Images/search.png"/>
+                </Button>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>
