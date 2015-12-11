@@ -1,0 +1,180 @@
+﻿<UserControl
+    x:Class="ShellTC.View.RightView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    d:DesignHeight="700"
+    d:DesignWidth="525"
+    mc:Ignorable="d">
+    <Grid>
+        <DockPanel
+            x:Name="DockPanelLeft"
+            Grid.Column="0"
+            Height="Auto"
+            Width="Auto">
+
+            <StackPanel
+                DockPanel.Dock="Top"
+                Height="30"
+                Margin="5,10,5,0"
+                Orientation="Horizontal">
+                <TextBlock
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"
+                    Text="Path" />
+                <TextBox
+                    x:Name="tbLPath"
+                    Width="430"
+                    Margin="0,4,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Center"
+                    Text="{Binding Path=.Path}" />
+                <Button
+                    x:Name="btnLGo"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding GoToPathCommand}"
+                    CommandParameter="{Binding Path=.Path}">
+                    <Image Source="/Images/arrow.png" />
+                </Button>
+            </StackPanel>
+
+            <StackPanel
+                DockPanel.Dock="Top"
+                Height="30"
+                Margin="5,10,5,10"
+                Orientation="Horizontal">
+                <ComboBox
+                    x:Name="cbLDisc"
+                    Width="70"
+                    Margin="0,0,20,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding AllDrives}"
+                    SelectedItem="{Binding
+                        Path=.Drive,
+                        Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel
+                                Height="20"
+                                Orientation="Horizontal">
+                                <Image
+                                    Height="15"
+                                    Width="15"
+                                    Source="/Images/drive.png" />
+                                <TextBlock
+                                    Margin="4,0"
+                                    Text="{Binding Path=.Path}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ComboBoxItem}">
+                            <Setter
+                                Property="IsEnabled"
+                                Value="{Binding Path=.IsEnabled}" />
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
+                <Button
+                    x:Name="btnLCopy"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center">
+                    <Image Source="/Images/copy.png" />
+                </Button>
+                <Button
+                    x:Name="btnLPaste"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center">
+                    <Image Source="/Images/paste.png" />
+                </Button>
+                <Button
+                    x:Name="btnLCut"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center">
+                    <Image Source="/Images/cut.png" />
+                </Button>
+                <Button
+                    x:Name="btnLDelete"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center">
+                    <Image Source="/Images/delete.png" />
+                </Button>
+                <Button
+                    Margin="224,0,10,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding GoUpCommand}"
+                    CommandParameter="{Binding Path=.Path}">
+                    <Image Source="/Images/arrowUp.png" />
+                </Button>
+
+            </StackPanel>
+
+            <ListBox
+                x:Name="lbLeft"
+                DockPanel.Dock="Top"
+                Height="520"
+                Margin="5,0"
+                HorizontalContentAlignment="Stretch"
+                ItemsSource="{Binding AllObjects}"
+                SelectedItem="{Binding Selected}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding OpenItemCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel
+                            Height="30"
+                            LastChildFill="False">
+                            <Image
+                                DockPanel.Dock="Left"
+                                Height="18"
+                                Width="18"
+                                Source="{Binding Path=.Icon}" />
+                            <TextBlock
+                                DockPanel.Dock="Left"
+                                Margin="8,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Path=.Name}" />
+                            <TextBlock
+                                DockPanel.Dock="Right"
+                                Margin="4,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Text="0B" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <StackPanel
+                DockPanel.Dock="Bottom"
+                Height="30"
+                Margin="5,10,5,10"
+                Orientation="Horizontal">
+                <TextBlock
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"
+                    Text="Search" />
+                <TextBox
+                    x:Name="tbLSearch"
+                    Width="420"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center" />
+                <Button
+                    x:Name="btnLSearch"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center">
+                    <Image Source="/Images/search.png" />
+                </Button>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</UserControl>

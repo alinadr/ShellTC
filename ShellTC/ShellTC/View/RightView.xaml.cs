@@ -1,5 +1,6 @@
-﻿namespace ShellTC
+﻿namespace ShellTC.View
 {
+    using ShellTC.ViewModel;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -16,13 +17,14 @@
     using System.Windows.Shapes;
 
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for RightView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class RightView : UserControl
     {
-        public MainWindow()
+        public RightView()
         {
             InitializeComponent();
+            this.DataContext = new BrowserViewModel();
         }
     }
 }
