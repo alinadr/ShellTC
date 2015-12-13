@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     d:DesignHeight="700"
-    d:DesignWidth="525"
+    d:DesignWidth="550"
     mc:Ignorable="d">
     <Grid>
         <DockPanel
@@ -26,7 +26,7 @@
                     Text="Path" />
                 <TextBox
                     x:Name="tbLPath"
-                    Width="430"
+                    Width="453"
                     Margin="0,4,0,0"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
@@ -36,8 +36,7 @@
                     x:Name="btnLGo"
                     Margin="10,0,0,0"
                     VerticalAlignment="Center"
-                    Command="{Binding GoToPathCommand}"
-                    CommandParameter="{Binding Path=.Path}">
+                    Command="{Binding GoToPathCommand}">
                     <Image Source="/Images/arrow.png" />
                 </Button>
             </StackPanel>
@@ -84,32 +83,35 @@
                 <Button
                     x:Name="btnLCopy"
                     Margin="0,0,10,0"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    Command="{Binding CopyCommand}">
                     <Image Source="/Images/copy.png" />
                 </Button>
                 <Button
                     x:Name="btnLPaste"
                     Margin="0,0,10,0"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    Command="{Binding PasteCommand}">
                     <Image Source="/Images/paste.png" />
                 </Button>
                 <Button
                     x:Name="btnLCut"
                     Margin="0,0,10,0"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    Command="{Binding CutCommand}">
                     <Image Source="/Images/cut.png" />
                 </Button>
                 <Button
                     x:Name="btnLDelete"
                     Margin="0,0,10,0"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    Command="{Binding DeleteCommand}">
                     <Image Source="/Images/delete.png" />
                 </Button>
                 <Button
-                    Margin="224,0,10,0"
+                    Margin="247,0,10,0"
                     VerticalAlignment="Center"
-                    Command="{Binding GoUpCommand}"
-                    CommandParameter="{Binding Path=.Path}">
+                    Command="{Binding GoUpCommand}">
                     <Image Source="/Images/arrowUp.png" />
                 </Button>
 
@@ -165,7 +167,7 @@
                     Text="Search" />
                 <TextBox
                     x:Name="tbLSearch"
-                    Width="420"
+                    Width="442"
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center" />
                 <Button

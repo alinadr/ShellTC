@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:v="clr-namespace:ShellTC.View"
         xmlns:vm="clr-namespace:ShellTC.ViewModel"
-        Title="Message" Height="150" Width="300" Icon="/Images/message.png">
+        Title="Message" Height="150" Width="300" Icon="/Images/message.png" WindowStartupLocation="CenterScreen">
     
     <Grid>
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" TextWrapping="Wrap" Text="{Binding Path=.Message}"/>

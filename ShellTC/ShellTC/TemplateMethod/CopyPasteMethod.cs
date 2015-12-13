@@ -7,5 +7,9 @@ namespace ShellTC.TemplateMethod
 {
     public class CopyPasteMethod: PasteMethod
     {
+        public override void DeleteData(string path)
+        {
+
+        }
     }
 }

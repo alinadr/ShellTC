@@ -20,8 +20,8 @@
         private string _path;
         private string _searchPath;
         private string _icon;
-        private string[] _buffer = new string[2];
-        private ShellObject _selected;
+        private static string[] _buffer = new string[2];
+        private ShellObject _selected = null;
         private FolderShell _drive;
         private ReadOnlyObservableCollection<ShellObject> _allDrives;
         private ReadOnlyObservableCollection<ShellObject> _allObjects;
@@ -37,9 +37,10 @@
             this.GoToPathCommand = new Command(arg => GoToPath(this.Path));
             this.OpenItemCommand = new Command(arg => OpenItem());
             this.GoUpCommand = new Command(arg => GoUp(this.Path));
-            this.CopyCommand = new Command(arg => Copy(this.Selected.Path));
             this.PasteCommand = new Command(arg => Paste(this.Path));
-
+            this.CopyCommand = new Command(arg => Copy(this.Selected));
+            this.CutCommand = new Command(arg => Cut(this.Selected));
+            this.DeleteCommand = new Command(arg => Delete(this.Selected));
         }
 
         #region Commands
@@ -49,7 +50,7 @@
         public Command GoUpCommand { get; set; }
         public Command CopyCommand { get; set; }
         public Command PasteCommand { get; set; }
-        public Command MoveCommand { get; set; }
+        public Command CutCommand { get; set; }
         public Command DeleteCommand { get; set; }
 
         #endregion
@@ -247,27 +248,88 @@
             }
             GoToPath(Path);
         }
-
-        public void Copy(string sourcePath)
-        {
-            Buffer[0] = sourcePath;
-            Buffer[1] = "copy";
-        }
-
+       
         public void Paste(string destPath)
         {
-            PasteMethod method = null;
+            try
+            {
+                PasteMethod method = null;
 
-            if (Buffer[1].Equals("copy"))
-            {
-                method = new CopyPasteMethod();
-                method.Paste(Buffer[0], destPath);
+                if (Buffer[1].Equals("copy"))
+                {
+                    method = new CopyPasteMethod();
+                    method.Paste(Buffer[0], destPath);
+                }
+                if (Buffer[1].Equals("cut"))
+                {
+                    method = new CutPasteMethod();
+                    method.Paste(Buffer[0], destPath);
+                }
+
+                GoToPath(destPath);
             }
-            if (Buffer[1].Equals("cut"))
+            catch (NullReferenceException e)
             {
-                method = new CutPasteMethod();
-                method.Paste(Buffer[0], destPath);
+                ResponceToTheException(e, "Nothing to paste");
             }
+        }
+
+        public void Copy(ShellObject source)
+        {
+            try
+            {
+                string sourcePath = source.Path;
+                Buffer[0] = sourcePath;
+                Buffer[1] = "copy";
+            }
+            catch (NullReferenceException e)
+            {
+                ResponceToTheException(e, "Select an item to copy");
+            }
+            
+        }
+
+        public void Cut(ShellObject source)
+        {
+            try
+            {
+                string sourcePath = source.Path;
+                Buffer[0] = sourcePath;
+                Buffer[1] = "cut";
+            }
+            catch (NullReferenceException e)
+            {
+                ResponceToTheException(e, "Select an item to cut");
+            }
+            
+        }
+
+        public void Delete(ShellObject source)
+        {
+            try
+            {
+                string sourcePath = source.Path;
+
+                FileAttributes attr = File.GetAttributes(sourcePath);
+
+                if (attr.HasFlag(FileAttributes.Directory))
+                {
+                    actionStrategy = GetActions(ActionObjects.FolderShell);
+                    actionStrategy.Delete(sourcePath);
+                }
+                else
+                {
+                    actionStrategy = GetActions(ActionObjects.FileShell);
+                    actionStrategy.Delete(sourcePath);
+                }
+
+                GoToPath(sourcePath.Substring(0, sourcePath.LastIndexOf('\\') + 1));
+            }
+            catch (NullReferenceException e)
+            {
+                ResponceToTheException(e, "Select an item to delete");
+            }
+            
         }
 
         #endregion
@@ -332,10 +394,17 @@
             return actions;
         }
 
-        public static void ResponceToTheException(Exception except)
+        public static void ResponceToTheException(Exception except, string message = null)
         {
             MessageWindow mw = new MessageWindow();
-            MessageWindowViewModel.Instance.Message = except.Message;
+            if (String.IsNullOrEmpty(message))
+            {
+                MessageWindowViewModel.Instance.Message = except.Message;
+            }
+            else
+            {
+                MessageWindowViewModel.Instance.Message = message;
+            }
             mw.ShowDialog();
         }
     }

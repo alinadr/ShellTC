@@ -8,7 +8,7 @@ using System.Text;
 
 namespace ShellTC.TemplateMethod
 {
-    abstract class PasteMethod
+    public abstract class PasteMethod
     {
         public IStrategy actionStrategy = null;
 
@@ -30,10 +30,7 @@ namespace ShellTC.TemplateMethod
             
         }
 
-        public abstract void DeleteData(string sourcePath)
-        {
-
-        }
+        public abstract void DeleteData(string sourcePath);
 
         public void Paste(string sourcePath, string destPath)
         {

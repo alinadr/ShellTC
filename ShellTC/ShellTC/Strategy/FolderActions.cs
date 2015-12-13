@@ -9,10 +9,23 @@ namespace ShellTC.Strategy
 {
     public class FolderActions: IStrategy
     {
+        private bool flag = true;
+
         public void Copy(string sourcePath, string destPath, string name = null)
         {
             DirectoryInfo source = new DirectoryInfo(sourcePath);
             DirectoryInfo destination = new DirectoryInfo(destPath);
+
+            if (destination.FullName.Contains(source.FullName))
+                throw new Exception("Cannot perform DeepCopy: Ancestry conflict detected");
+            if (flag)
+            {
+                DirectoryInfo dest = destination.CreateSubdirectory(source.Name);
+                flag = false;
+                this.Copy(source.FullName, dest.FullName);
+                return;
+            }
+            
 
             foreach (DirectoryInfo dir in source.GetDirectories())
             {
@@ -20,7 +33,7 @@ namespace ShellTC.Strategy
                 this.Copy(dir.FullName, newDest.FullName);
             }
             foreach (FileInfo file in source.GetFiles())
-                file.CopyTo(Path.Combine(destination.FullName, file.Name));
+                new FileActions().Copy(file.FullName, destination.FullName, file.Name);
         }
 
         public void Cut(string sourcePath, string destPath)
@@ -30,8 +43,7 @@ namespace ShellTC.Strategy
 
         public void Delete(string path)
         {
-            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(path);
-            // Delete this dir and all subdirs.
+            DirectoryInfo di = new System.IO.DirectoryInfo(path);
             try
             {
                 di.Delete(true);

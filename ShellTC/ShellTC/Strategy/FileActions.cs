@@ -8,33 +8,31 @@ namespace ShellTC.Strategy
 {
     public class FileActions: IStrategy
     {
-        //path and name getrennt
         public void Copy(string sourcePath, string destPath, string name)
         {
-            // Use Path class to manipulate file and directory paths.
-            string sourceFile = System.IO.Path.Combine(sourcePath, name);
-            string destFile = System.IO.Path.Combine(destPath, name);
-
-            // To copy a folder's contents to a new location:
-            // Create a new target folder, if necessary.
-            if (!System.IO.Directory.Exists(destFile))
+            
+            if (!System.IO.Directory.Exists(destPath))
             {
-                System.IO.Directory.CreateDirectory(destFile);
+                System.IO.Directory.CreateDirectory(destPath);
             }
 
-            // To copy a file to another location and 
-            // overwrite the destination file if it already exists.
-            System.IO.File.Copy(sourceFile, destFile, true);
+            string destFile = System.IO.Path.Combine(destPath, name);
+
+            while (System.IO.File.Exists(destFile))
+            {
+                name = name.Substring(0, name.LastIndexOf('.')) + "_copy" + name.Substring(name.LastIndexOf('.'));
+                destFile = System.IO.Path.Combine(destPath, name);
+            }
+
+            System.IO.File.Copy(sourcePath, destFile, true);
+                 
         }
 
-        //path and name zusammen
         public void Cut(string sourcePath, string destPath)
         {
-            // To move a file or folder to a new location:
             System.IO.File.Move(sourcePath, destPath);
         }
 
-        //path and name zusammen
         public void Delete(string path)
         {
             System.IO.FileInfo fi = new System.IO.FileInfo(path);
