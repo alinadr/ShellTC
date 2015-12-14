@@ -104,30 +104,30 @@
             }
         }
 
-        public long countSize()
-        {
-            long size = 0;
-            string[] allFiles = Directory.GetFiles(Path, "*.*", SearchOption.AllDirectories);
-            foreach (var file in allFiles)
-            {
-                size += file.Length;
-            }
+        //public long countSize()
+        //{
+        //    long size = 0;
+        //    string[] allFiles = Directory.GetFiles(Path, "*.*", SearchOption.AllDirectories);
+        //    foreach (var file in allFiles)
+        //    {
+        //        size += file.Length;
+        //    }
 
-            return size;
-        }
+        //    return size;
+        //}
 
-        private void GetDirectorySize(string directory)
-        {
-            foreach (string dir in Directory.GetDirectories(directory))
-            {
-                GetDirectorySize(dir);
-            }
+        //private void GetDirectorySize(string directory)
+        //{
+        //    foreach (string dir in Directory.GetDirectories(directory))
+        //    {
+        //        GetDirectorySize(dir);
+        //    }
 
-            foreach (FileInfo file in new DirectoryInfo(directory).GetFiles())
-            {
-                this.Size += file.Length;
-            }
-        }
+        //    foreach (FileInfo file in new DirectoryInfo(directory).GetFiles())
+        //    {
+        //        this.Size += file.Length;
+        //    }
+        //}
 
         public static void ResponceToTheException(Exception except)
         {

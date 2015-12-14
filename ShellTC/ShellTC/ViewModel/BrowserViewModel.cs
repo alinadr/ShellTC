@@ -264,6 +264,7 @@
                 {
                     method = new CutPasteMethod();
                     method.Paste(Buffer[0], destPath);
+                    Buffer[1] = "copy";
                 }
 
                 GoToPath(destPath);
@@ -323,7 +324,7 @@
                     actionStrategy.Delete(sourcePath);
                 }
 
-                GoToPath(sourcePath.Substring(0, sourcePath.LastIndexOf('\\') + 1));
+                GoToPath(sourcePath.Substring(0, sourcePath.LastIndexOf('\\')));
             }
             catch (NullReferenceException e)
             {

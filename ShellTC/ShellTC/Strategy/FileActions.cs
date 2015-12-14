@@ -42,7 +42,6 @@ namespace ShellTC.Strategy
             }
             catch (System.IO.IOException e)
             {
-                Console.WriteLine(e.Message);
             }
         }
 

@@ -35,8 +35,26 @@ namespace ShellTC.TemplateMethod
         public void Paste(string sourcePath, string destPath)
         {
             this.CopyData(sourcePath, destPath);
-            this.DeleteData(sourcePath);
-        }
+            string newPath = destPath + "\\" + sourcePath.Substring(sourcePath.LastIndexOf("\\") + 1);
+            if (sourcePath.Equals(newPath))
+            {
+                FileAttributes attr = File.GetAttributes(sourcePath);
+
+                if (attr.HasFlag(FileAttributes.Directory))
+                {
+                    this.DeleteData(sourcePath + "_copy");
+                }
+                else
+                {
+                    newPath = sourcePath.Substring(0, sourcePath.LastIndexOf('.')) + "_copy" + sourcePath.Substring(sourcePath.LastIndexOf('.'));
+                    this.DeleteData(newPath);
+                }
+            }
+            else
+            {
+                this.DeleteData(sourcePath);
+            }
+    }
 
         public static IStrategy GetActions(ActionObjects aObj)
         {

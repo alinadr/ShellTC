@@ -11,6 +11,18 @@
     {
         public FileShell(string path): base(path)
         {
+            FileInfo info = new FileInfo(Path);
+            long size;
+            if (!ShellObject.CheckReadOnly(info.Attributes))
+            {
+                size = info.Length;
+            }
+            else
+            {
+                size = 0;
+            }
+            size = size / 1024;
+            base.Size = size.ToString() + "KB";
         }
 
         public new string Icon
@@ -21,27 +33,10 @@
             }
         }
 
-        public new long Size
-        {
-            get
-            {
-                FileInfo info = new FileInfo(Path);
-
-                if (ShellObject.CheckReadOnly(info.Attributes))
-                {
-                    return info.Length;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        }
-
-        public long countSize()
-        {
-            FileInfo info = new FileInfo(Path);
-            return info.Length;
-        }
+        //public long countSize()
+        //{
+        //    FileInfo info = new FileInfo(Path);
+        //    return info.Length;
+        //}
     }
 }

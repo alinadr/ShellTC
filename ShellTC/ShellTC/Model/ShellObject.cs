@@ -17,6 +17,7 @@ namespace ShellTC.Model
         public ShellObject(string path)
         {
              Path = path;
+             Size = "";
         }
 
         public string Name
@@ -28,7 +29,17 @@ namespace ShellTC.Model
         }
 
         public string Path { get; set; }
-        public long Size { get; set; }
+        public string Size
+        {
+            get
+            {
+                return _size;
+            }
+            set
+            {
+                _size = value;
+            }
+        }
         public string Icon { get; set; }
 
         public static bool CheckReadOnly(FileAttributes attributes)

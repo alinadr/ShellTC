@@ -150,7 +150,7 @@
                                 Margin="4,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
-                                Text="0B" />
+                                Text="{Binding Path=.Size}" />
                         </DockPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -162,9 +162,8 @@
                 Margin="5,10,5,10"
                 Orientation="Horizontal">
                 <TextBlock
-                    Margin="0,0,10,0"
-                    VerticalAlignment="Center"
-                    Text="Search" />
+            		Margin="8,0,2,0"
+            		Text="Search here" Width="35" TextWrapping="WrapWithOverflow" FontSize="11" />
                 <TextBox
                     x:Name="tbLSearch"
                     Width="442"

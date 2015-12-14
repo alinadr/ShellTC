@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,31 +10,19 @@ namespace ShellTC.Strategy
 {
     public class FolderActions: IStrategy
     {
-        private bool flag = true;
-
         public void Copy(string sourcePath, string destPath, string name = null)
         {
             DirectoryInfo source = new DirectoryInfo(sourcePath);
             DirectoryInfo destination = new DirectoryInfo(destPath);
 
-            if (destination.FullName.Contains(source.FullName))
-                throw new Exception("Cannot perform DeepCopy: Ancestry conflict detected");
-            if (flag)
-            {
-                DirectoryInfo dest = destination.CreateSubdirectory(source.Name);
-                flag = false;
-                this.Copy(source.FullName, dest.FullName);
-                return;
-            }
-            
+            name = source.Name;
 
-            foreach (DirectoryInfo dir in source.GetDirectories())
+            while (System.IO.Directory.Exists(destPath + "\\" + name))
             {
-                DirectoryInfo newDest = destination.CreateSubdirectory(dir.Name);
-                this.Copy(dir.FullName, newDest.FullName);
+                name = name + "_copy";
             }
-            foreach (FileInfo file in source.GetFiles())
-                new FileActions().Copy(file.FullName, destination.FullName, file.Name);
+            DirectoryInfo dest = destination.CreateSubdirectory(name);
+            Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(sourcePath, dest.FullName, true);
         }
 
         public void Cut(string sourcePath, string destPath)
