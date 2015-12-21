@@ -8,6 +8,14 @@
     d:DesignHeight="700"
     d:DesignWidth="550"
     mc:Ignorable="d">
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Create txt file" Command="{Binding CreateTxtFileCommand}"></MenuItem>
+            <MenuItem Header="Create png file" Command="{Binding CreateBmpFileCommand}"></MenuItem>
+
+        </ContextMenu>
+    </UserControl.ContextMenu>
+    
     <Grid>
         <DockPanel
             x:Name="DockPanelLeft"
@@ -172,7 +180,9 @@
                 <Button
                     x:Name="btnLSearch"
                     Margin="10,0,0,0"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    Command="{Binding SearchCommand}"
+                    CommandParameter="{Binding Text, ElementName=tbLSearch}">
                     <Image Source="/Images/search.png" />
                 </Button>
             </StackPanel>

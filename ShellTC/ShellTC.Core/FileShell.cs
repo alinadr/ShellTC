@@ -1,4 +1,4 @@
-﻿namespace ShellTC.Model
+﻿namespace ShellTC.Core
 {
     using System;
     using System.Collections.Generic;
@@ -7,8 +7,15 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Class that represents file object
+    /// </summary>
     public class FileShell: ShellObject 
     {
+        /// <summary>
+        /// Ctor for FileShell
+        /// </summary>
+        /// <param name="path">file path</param>
         public FileShell(string path): base(path)
         {
             FileInfo info = new FileInfo(Path);
@@ -32,11 +39,5 @@
                 return "\\Images\\file.png";
             }
         }
-
-        //public long countSize()
-        //{
-        //    FileInfo info = new FileInfo(Path);
-        //    return info.Length;
-        //}
     }
 }

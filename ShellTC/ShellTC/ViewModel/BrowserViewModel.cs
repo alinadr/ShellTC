@@ -7,33 +7,30 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using ShellTC.Model;
+    using ShellTC.Core;
+    using ShellTC.Core.Actions;
+    using ShellTC.Core.FileOperations;
+    using ShellTC.Core.ProccesManagers;
     using ShellTC.View;
-    using ShellTC.Strategy;
-    using ShellTC.TemplateMethod;
 
     public class BrowserViewModel : ViewModelBase
     {
+        private static string[] _buffer = new string[2];
+
         private static string[] _drives = System.IO.Directory.GetLogicalDrives();
         private IStrategy actionStrategy = null;
 
         private string _path;
         private string _searchPath;
         private string _icon;
-        private static string[] _buffer = new string[2];
         private ShellObject _selected = null;
         private FolderShell _drive;
         private ReadOnlyObservableCollection<ShellObject> _allDrives;
         private ReadOnlyObservableCollection<ShellObject> _allObjects;
-        public List<string> readOnlyPaths = new List<string>();
 
         public BrowserViewModel()
         {
             Drive = (FolderShell)AllDrives[0];
-            //foreach (FolderShell drive in AllDrives)
-            //{
-            //    CancelReadOnlyAttributes(drive);
-            //}
             this.GoToPathCommand = new Command(arg => GoToPath(this.Path));
             this.OpenItemCommand = new Command(arg => OpenItem());
             this.GoUpCommand = new Command(arg => GoUp(this.Path));
@@ -41,17 +38,32 @@
             this.CopyCommand = new Command(arg => Copy(this.Selected));
             this.CutCommand = new Command(arg => Cut(this.Selected));
             this.DeleteCommand = new Command(arg => Delete(this.Selected));
+            this.SearchCommand = new Command(Search);
+            this.CreateTxtFileCommand = new Command(args => CreateTxtFile());
+            this.CreateBmpFileCommand = new Command(args => CreatePngFile());
         }
 
         #region Commands
 
         public Command GoToPathCommand { get; set; }
+
         public Command OpenItemCommand { get; set; }
+
         public Command GoUpCommand { get; set; }
+        
         public Command CopyCommand { get; set; }
+        
         public Command PasteCommand { get; set; }
+        
         public Command CutCommand { get; set; }
+        
         public Command DeleteCommand { get; set; }
+        
+        public Command SearchCommand { get; set; }
+        
+        public Command CreateTxtFileCommand { get; set; }
+        
+        public Command CreateBmpFileCommand { get; set; }
 
         #endregion
 
@@ -105,6 +117,7 @@
             {
                 return _buffer;
             }
+
             set
             {
                 _buffer = value;
@@ -136,20 +149,22 @@
             {
                 try
                 {
-                    _drive = value;
-                    Path = Drive.Path;
-                    List<ShellObject> obj = value.Folders.Concat(value.Files).ToList();
-                    _allObjects = new ReadOnlyObservableCollection<ShellObject>(new ObservableCollection<ShellObject>(obj));
-                    OnPropertyChanged("Drive");
-                    OnPropertyChanged("AllObjects");
+                    if (value != null)
+                    {
+                        _drive = value;
+                        Path = Drive.Path;
+                        List<ShellObject> obj = value.Folders.Concat(value.Files).ToList();
+                        _allObjects = new ReadOnlyObservableCollection<ShellObject>(new ObservableCollection<ShellObject>(obj));
+                        OnPropertyChanged("Drive");
+                        OnPropertyChanged("AllObjects");
+                    }
                 }
-                catch
+                catch(Exception)
                 {
                     _allObjects = null;
                     OnPropertyChanged("Drive");
                     OnPropertyChanged("AllObjects");
                 }
-                
             }
         }
 
@@ -164,8 +179,10 @@
                     {
                         allDrives.Add(new FolderShell(drive, true));
                     }
+
                     _allDrives = new ReadOnlyObservableCollection<ShellObject>(allDrives);
                 }
+
                 return _allDrives;
             }
         }
@@ -176,7 +193,8 @@
             {
                 return _allObjects;
             }
-            set
+
+            private set
             {
                 _allObjects = value;
                 OnPropertyChanged("AllObjects");
@@ -187,23 +205,25 @@
 
         #region Command Actions
 
-        public void GoToPath(string pathToGo)
+        public void GoToPath(string destPath)
         {
             try
             {
-                if (!pathToGo.Substring(0, 3).Equals(Drive.Path))
+                if (!destPath.Substring(0, 3).Equals(Drive.Path) && !string.IsNullOrEmpty(destPath))
                 {
-                    Drive = (FolderShell)AllDrives[AllDrives.IndexOf(AllDrives.Where(item => item.Path.Equals(pathToGo.Substring(0, 3))).First())];
+                    int index = AllDrives.IndexOf(AllDrives.Where(item => item.Path.Equals(destPath.Substring(0, 3))).First());
+                    Drive = (FolderShell)AllDrives[index];
                 }
-                FileAttributes attr = File.GetAttributes(pathToGo);
+
+                FileAttributes attr = File.GetAttributes(destPath);
                 
                 if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                 {
-                    Path = pathToGo;
+                    Path = destPath;
                 }
                 else
                 {
-                    Path = pathToGo.Substring(0, pathToGo.LastIndexOf('\\'));
+                    Path = destPath.Substring(0, destPath.LastIndexOf('\\'));
                 }
 
                 FolderShell f = new FolderShell(Path);
@@ -227,26 +247,36 @@
             {
                 GoToPath(Selected.Path);
             }
+            else
+            {
+                GeneralProcessManager manager = new GeneralProcessManager();
+
+                manager.Open(Selected.Path);
+            }
         }
 
         public void GoUp(string pathInit)
         {
-            if (pathInit.Length > 3)
+            if (string.IsNullOrEmpty(pathInit))
             {
-                if (!(pathInit.LastIndexOf('\\') == 2))
+                if (pathInit.Length > 3)
                 {
-                    this.Path = pathInit.Substring(0, pathInit.LastIndexOf('\\'));
+                    if (!(pathInit.LastIndexOf('\\') == 2))
+                    {
+                        this.Path = pathInit.Substring(0, pathInit.LastIndexOf('\\'));
+                    }
+                    else
+                    {
+                        this.Path = pathInit.Substring(0, pathInit.LastIndexOf('\\') + 1);
+                    }
                 }
                 else
                 {
-                    this.Path = pathInit.Substring(0, pathInit.LastIndexOf('\\') + 1);
+                    Path = Drive.Path;
                 }
+
+                GoToPath(Path);
             }
-            else
-            {
-                Path = Drive.Path;
-            }
-            GoToPath(Path);
         }
        
         public void Paste(string destPath)
@@ -260,6 +290,7 @@
                     method = new CopyPasteMethod();
                     method.Paste(Buffer[0], destPath);
                 }
+                
                 if (Buffer[1].Equals("cut"))
                 {
                     method = new CutPasteMethod();
@@ -271,7 +302,8 @@
             }
             catch (NullReferenceException e)
             {
-                ResponceToTheException(e, "Nothing to paste");
+                string message = "Nothing to paste";
+                ResponceToTheException(e, message);
             }
         }
 
@@ -279,30 +311,36 @@
         {
             try
             {
-                string sourcePath = source.Path;
-                Buffer[0] = sourcePath;
-                Buffer[1] = "copy";
+                if (source != null)
+                {
+                    string sourcePath = source.Path;
+                    Buffer[0] = sourcePath;
+                    Buffer[1] = "copy";
+                }
             }
             catch (NullReferenceException e)
             {
-                ResponceToTheException(e, "Select an item to copy");
+                string message = "Select an item to copy";
+                ResponceToTheException(e, message);
             }
-            
         }
 
         public void Cut(ShellObject source)
         {
             try
             {
-                string sourcePath = source.Path;
-                Buffer[0] = sourcePath;
-                Buffer[1] = "cut";
+                if (source != null)
+                {
+                    string sourcePath = source.Path;
+                    Buffer[0] = sourcePath;
+                    Buffer[1] = "cut";
+                }
             }
             catch (NullReferenceException e)
             {
-                ResponceToTheException(e, "Select an item to cut");
+                string message = "Select an item to cut";
+                ResponceToTheException(e, message);
             }
-            
         }
 
         public void Delete(ShellObject source)
@@ -328,53 +366,95 @@
             }
             catch (NullReferenceException e)
             {
-                ResponceToTheException(e, "Select an item to delete");
+                string message = "Select an item to delete";
+                ResponceToTheException(e, message);
             }
-            
         }
 
+        public void Search(object parameter)
+        {
+            try
+            {
+                if (parameter != null)
+                {
+                    List<ShellObject> searchRes = Drive.RecursiveSearch(Path, parameter.ToString());
+                    AllObjects = new ReadOnlyObservableCollection<ShellObject>(new ObservableCollection<ShellObject>(searchRes));
+                }
+            }
+            catch (Exception e)
+            {
+            }
+        }
+
+        public void CreateTxtFile()
+        {
+            NotepadProcessManager manager = new NotepadProcessManager();
+            manager.CreateFile(Path + "\\new file");
+            OnPropertyChanged("AllObjects");
+        }
+
+        public void CreatePngFile()
+        {
+            BmpProcessManager manager = new BmpProcessManager();
+            manager.CreateFile(Path + "\\new file");
+            OnPropertyChanged("AllObjects");
+        }
         #endregion
 
-        #region Attribute Helpers
+        #region Helpers
 
-        public void CancelReadOnlyAttributes(ShellObject drive)
+        public static void ResponceToTheException(Exception except, string message = null)
         {
-            DirectoryInfo di = new DirectoryInfo(drive.Path);
-            RemoveReadOnlyFlag(di);
-        }
+            if (except != null)
+            {
+                MessageWindow mw = new MessageWindow();
+                if (string.IsNullOrEmpty(message))
+                {
+                    MessageWindowViewModel.Instance.Message = except.Message;
+                }
+                else
+                {
+                    MessageWindowViewModel.Instance.Message = message;
+                }
 
-        public void RemoveReadOnlyFlag(DirectoryInfo di)
-        {
-            if (ShellObject.CheckReadOnly(di.Attributes))
-            {
-                di.Attributes = FileAttributes.Normal;
-                readOnlyPaths.Add(di.FullName);
-            }
-            foreach (DirectoryInfo dif in di.GetDirectories())
-            {
-                try
-                {
-                    RemoveReadOnlyFlag(dif);
-                }
-                catch 
-                {
-                    
-                }
-            }
-
-            foreach (FileInfo fi in di.GetFiles())
-            {
-                if (ShellObject.CheckReadOnly(fi.Attributes))
-                {
-                    fi.Attributes = FileAttributes.Normal;
-                    readOnlyPaths.Add(fi.FullName);
-                }
+                mw.ShowDialog();
             }
         }
 
-        public void RenewReadOnlyAttributes() { }
+        ////public void CancelReadOnlyAttributes(ShellObject drive)
+        ////{
+        ////    DirectoryInfo di = new DirectoryInfo(drive.Path);
+        ////    RemoveReadOnlyFlag(di);
+        ////}
 
-        #endregion
+        ////public void RemoveReadOnlyFlag(DirectoryInfo di)
+        ////{
+        ////    if (ShellObject.CheckReadOnly(di.Attributes))
+        ////    {
+        ////        di.Attributes = FileAttributes.Normal;
+        ////        ReadOnlyPaths.Add(di.FullName);
+        ////    }
+           
+        ////    foreach (DirectoryInfo dif in di.GetDirectories())
+        ////    {
+        ////        try
+        ////        {
+        ////            RemoveReadOnlyFlag(dif);
+        ////        }
+        ////        catch 
+        ////        {                    
+        ////        }
+        ////    }
+
+        ////    foreach (FileInfo fi in di.GetFiles())
+        ////    {
+        ////        if (ShellObject.CheckReadOnly(fi.Attributes))
+        ////        {
+        ////            fi.Attributes = FileAttributes.Normal;
+        ////            ReadOnlyPaths.Add(fi.FullName);
+        ////        }
+        ////    }
+        ////}
 
         private static IStrategy GetActions(ActionObjects aObj)
         {
@@ -394,19 +474,6 @@
 
             return actions;
         }
-
-        public static void ResponceToTheException(Exception except, string message = null)
-        {
-            MessageWindow mw = new MessageWindow();
-            if (String.IsNullOrEmpty(message))
-            {
-                MessageWindowViewModel.Instance.Message = except.Message;
-            }
-            else
-            {
-                MessageWindowViewModel.Instance.Message = message;
-            }
-            mw.ShowDialog();
-        }
+        #endregion
     }
 }

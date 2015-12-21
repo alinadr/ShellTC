@@ -35,7 +35,7 @@
 
         protected void OnPropertyChanged<T>(Expression<Func<T>> propertyExpression)
         {
-            if (propertyExpression.Body.NodeType == ExpressionType.MemberAccess)
+            if (propertyExpression.Body.NodeType == ExpressionType.MemberAccess && propertyExpression!=null)
             {
                 var memberExpr = propertyExpression.Body as MemberExpression;
                 string propertyName = memberExpr.Member.Name;
